@@ -10,3 +10,4 @@ frontend/build
 frontend/next-env.d.ts
 frontend/package-lock.json
 frontend/yarn.lock
+frontend/yarn-error.log
