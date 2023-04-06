@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.11",
     "@chakra-ui/react": "^2.5.4",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
@@ -17,10 +18,13 @@
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "deepmerge": "^4.3.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.36.0",
     "eslint-config-next": "13.2.4",
     "framer-motion": "^10.10.0",
+    "graphql": "^16.6.0",
+    "lodash": "^4.17.21",
     "next": "13.2.4",
     "next-auth": "^4.20.1",
     "react": "18.2.0",

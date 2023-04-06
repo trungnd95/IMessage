@@ -6,5 +6,6 @@
     "source.organizeImports": true
   },
   "security.workspace.trust.enabled": false,
-  "eslint.workingDirectories": ["frontend", "backend"]
+  "eslint.workingDirectories": ["frontend", "backend"],
+  "cSpell.words": ["chakra"]
 }
