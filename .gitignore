@@ -11,3 +11,6 @@ frontend/next-env.d.ts
 frontend/package-lock.json
 frontend/yarn.lock
 frontend/yarn-error.log
+
+backend/node_modules
+backend/yarn.lock
