@@ -7,5 +7,6 @@
   },
   "security.workspace.trust.enabled": false,
   "eslint.workingDirectories": ["frontend", "backend"],
-  "cSpell.words": ["chakra"]
+  "cSpell.words": ["chakra"],
+  "editor.tabSize": 2
 }
