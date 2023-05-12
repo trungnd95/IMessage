@@ -16,3 +16,4 @@ backend/node_modules
 backend/yarn.lock
 backend/dist/
 backend/yarn-error.log
+backend/.cache/*

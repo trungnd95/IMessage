@@ -5,8 +5,12 @@ import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
+import 'module-alias/register';
+import { getSession } from 'next-auth/react';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
+import { Context } from './lib/common-type';
+import UserResolver from './modules/user/user.resolver';
 import { HelloResolver } from './resolvers/Hello';
 
 const main = async () => {
@@ -17,7 +21,7 @@ const main = async () => {
   // Apollo server
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, UserResolver],
       emitSchemaFile: true,
       validate: false,
     }),
@@ -29,7 +33,10 @@ const main = async () => {
     cors<cors.CorsRequest>(),
     json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      context: async ({ req }): Promise<Context> => {
+        const session = await getSession({ req });
+        return { session };
+      },
     }),
   );
 

@@ -3,6 +3,22 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Mutation {
+  createUsername(username: String): UserMutationResponse!
+}
+
+interface MutationResponse {
+  code: Float!
+  message: String
+  success: Boolean!
+}
+
 type Query {
   hello: String!
+}
+
+type UserMutationResponse implements MutationResponse {
+  code: Float!
+  message: String
+  success: Boolean!
 }
