@@ -1,23 +1,65 @@
-import { Button, Center, Image, Input, Stack, Text } from '@chakra-ui/react';
+import { useCreateUsernameMutation } from '@/graphql-client/generated/graphql';
+import {
+  Button,
+  Center,
+  Image,
+  Input,
+  Stack,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import * as React from 'react';
 
 type IAppProps = {
   session: Session | null;
-  reloadSession?: () => void;
+  reloadSession: () => void;
 };
 
 const Auth: React.FunctionComponent<IAppProps> = ({
   session,
-  //reloadSession,
+  reloadSession,
 }) => {
+  const toast = useToast();
+  const [createUsername, { loading }] = useCreateUsernameMutation();
   const [username, setUsername] = React.useState('');
   const onSubmit = async () => {
     try {
       // Call graphql mutation to create user name
-    } catch (error) {
-      console.log('Submit error');
+      const response = await createUsername({
+        variables: {
+          username,
+        },
+      });
+
+      if (response.data?.createUsername.success) {
+        reloadSession();
+        toast({
+          title: 'Username created.',
+          description: response.data.createUsername.message,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Username created.',
+          description: response.data?.createUsername.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        title: 'Username created.',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
   return (
@@ -32,7 +74,12 @@ const Auth: React.FunctionComponent<IAppProps> = ({
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <Button type="button" onClick={onSubmit} width="100%">
+            <Button
+              type="button"
+              onClick={onSubmit}
+              width="100%"
+              isLoading={loading}
+            >
               Save
             </Button>
           </>

@@ -13,13 +13,15 @@ export abstract class MutationResponse {
   message?: string;
 }
 
+export interface User {
+  id?: string | null;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  username?: string | null;
+}
 export interface Session {
-  user?: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    username?: string | null;
-  };
+  user?: User;
   expires: ISODateString;
 }
 
