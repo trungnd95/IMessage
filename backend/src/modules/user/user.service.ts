@@ -1,5 +1,5 @@
-import { User } from '@/lib/common-type';
 import prisma from '@/lib/prismaClient';
+import { User } from './user.dto';
 
 /**
  * Find unique user with username

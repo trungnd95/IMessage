@@ -3,8 +3,13 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 type Mutation {
-  createUsername(username: String): UserMutationResponse!
+  createUsername(username: String!): UserMutationResponse!
 }
 
 interface MutationResponse {
@@ -15,6 +20,16 @@ interface MutationResponse {
 
 type Query {
   hello: String!
+  searchUsers(usernameSearch: String!): [User!]!
+}
+
+type User {
+  email: String!
+  emailVerified: DateTime!
+  id: ID!
+  image: String!
+  name: String!
+  username: String!
 }
 
 type UserMutationResponse implements MutationResponse {
