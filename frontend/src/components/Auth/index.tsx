@@ -54,7 +54,7 @@ const Auth: React.FunctionComponent<IAppProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
-        title: 'Username created.',
+        title: 'Error!',
         description: error.message,
         status: 'error',
         duration: 3000,

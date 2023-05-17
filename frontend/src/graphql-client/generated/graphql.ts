@@ -14,6 +14,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
 };
 
 export type Mutation = {
@@ -23,7 +24,7 @@ export type Mutation = {
 
 
 export type MutationCreateUsernameArgs = {
-  username?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 export type MutationResponse = {
@@ -35,6 +36,22 @@ export type MutationResponse = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
+  searchUsers: Array<User>;
+};
+
+
+export type QuerySearchUsersArgs = {
+  usernameSearch: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String'];
+  emailVerified: Scalars['DateTime'];
+  id: Scalars['ID'];
+  image: Scalars['String'];
+  name: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type UserMutationResponse = MutationResponse & {
@@ -45,7 +62,7 @@ export type UserMutationResponse = MutationResponse & {
 };
 
 export type CreateUsernameMutationVariables = Exact<{
-  username?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 }>;
 
 
@@ -53,7 +70,7 @@ export type CreateUsernameMutation = { __typename?: 'Mutation', createUsername: 
 
 
 export const CreateUsernameDocument = gql`
-    mutation createUsername($username: String) {
+    mutation createUsername($username: String!) {
   createUsername(username: $username) {
     message
     success
@@ -97,9 +114,19 @@ export type MutationResponseFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('hello' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('hello' | 'searchUsers' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
-	hello?: FieldPolicy<any> | FieldReadFunction<any>
+	hello?: FieldPolicy<any> | FieldReadFunction<any>,
+	searchUsers?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type UserKeySpecifier = ('email' | 'emailVerified' | 'id' | 'image' | 'name' | 'username' | UserKeySpecifier)[];
+export type UserFieldPolicy = {
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	emailVerified?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	image?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	username?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserMutationResponseKeySpecifier = ('code' | 'message' | 'success' | UserMutationResponseKeySpecifier)[];
 export type UserMutationResponseFieldPolicy = {
@@ -119,6 +146,10 @@ export type StrictTypedTypePolicies = {
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
 		fields?: QueryFieldPolicy,
+	},
+	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
+		fields?: UserFieldPolicy,
 	},
 	UserMutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserMutationResponseKeySpecifier | (() => undefined | UserMutationResponseKeySpecifier),

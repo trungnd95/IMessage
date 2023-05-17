@@ -9,7 +9,7 @@ import 'module-alias/register';
 import { getSession } from 'next-auth/react';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import { Context } from './lib/common-type';
+import { Context, Session } from './lib/common-type';
 import UserResolver from './modules/user/user.resolver';
 import { HelloResolver } from './resolvers/Hello';
 
@@ -37,7 +37,7 @@ const main = async () => {
     json(),
     expressMiddleware(apolloServer, {
       context: async ({ req }): Promise<Context> => {
-        const session = await getSession({ req });
+        const session = (await getSession({ req })) as Session;
         return { session };
       },
     }),

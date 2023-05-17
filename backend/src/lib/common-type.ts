@@ -1,4 +1,4 @@
-import { User } from '@/modules/user/user.dto';
+import { User } from '@prisma/client';
 import { ISODateString } from 'next-auth';
 import { Field, InterfaceType } from 'type-graphql';
 

@@ -11,20 +11,20 @@ export class UserMutationResponse implements MutationResponse {
 @ObjectType()
 export class User {
   @Field(() => ID, { nullable: false })
-  id?: string;
+  id: string;
 
   @Field(() => String)
-  name?: string | null;
+  name: string | null;
 
   @Field(() => String)
-  email?: string | null;
+  email: string | null;
 
   @Field(() => String)
-  username?: string | null;
+  username: string | null;
 
   @Field(() => Date)
-  emailVerified?: Date | null;
+  emailVerified: Date | null;
 
   @Field(() => String)
-  image?: string | null;
+  image: string | null;
 }
