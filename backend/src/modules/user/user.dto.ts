@@ -22,8 +22,8 @@ export class User {
   @Field(() => String)
   username: string | null;
 
-  @Field(() => Date)
-  emailVerified: Date | null;
+  @Field(() => Date, { nullable: true })
+  emailVerified?: Date | null;
 
   @Field(() => String)
   image: string | null;

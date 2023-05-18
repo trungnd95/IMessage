@@ -87,7 +87,7 @@ const Auth: React.FunctionComponent<IAppProps> = ({
           <>
             <Text fontSize="3xl">MessengerQL</Text>
             <Button
-              onClick={() => signIn('google')}
+              onClick={() => console.log(signIn('google'))}
               leftIcon={
                 <Image
                   alt="google logo"

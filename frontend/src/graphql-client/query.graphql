@@ -1,0 +1,9 @@
+query SearchUsers($searchUsername: String!) {
+  searchUsers(usernameSearch: $searchUsername) {
+    email
+    id
+    image
+    name
+    username
+  }
+}

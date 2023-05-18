@@ -47,7 +47,7 @@ export type QuerySearchUsersArgs = {
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
-  emailVerified: Scalars['DateTime'];
+  emailVerified?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   image: Scalars['String'];
   name: Scalars['String'];
@@ -67,6 +67,13 @@ export type CreateUsernameMutationVariables = Exact<{
 
 
 export type CreateUsernameMutation = { __typename?: 'Mutation', createUsername: { __typename?: 'UserMutationResponse', message?: string | null, success: boolean, code: number } };
+
+export type SearchUsersQueryVariables = Exact<{
+  searchUsername: Scalars['String'];
+}>;
+
+
+export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', email: string, id: string, image: string, name: string, username: string }> };
 
 
 export const CreateUsernameDocument = gql`
@@ -104,6 +111,45 @@ export function useCreateUsernameMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateUsernameMutationHookResult = ReturnType<typeof useCreateUsernameMutation>;
 export type CreateUsernameMutationResult = Apollo.MutationResult<CreateUsernameMutation>;
 export type CreateUsernameMutationOptions = Apollo.BaseMutationOptions<CreateUsernameMutation, CreateUsernameMutationVariables>;
+export const SearchUsersDocument = gql`
+    query SearchUsers($searchUsername: String!) {
+  searchUsers(usernameSearch: $searchUsername) {
+    email
+    id
+    image
+    name
+    username
+  }
+}
+    `;
+
+/**
+ * __useSearchUsersQuery__
+ *
+ * To run a query within a React component, call `useSearchUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchUsersQuery({
+ *   variables: {
+ *      searchUsername: // value for 'searchUsername'
+ *   },
+ * });
+ */
+export function useSearchUsersQuery(baseOptions: Apollo.QueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
+      }
+export function useSearchUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
+        }
+export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
+export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
+export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
 export type MutationKeySpecifier = ('createUsername' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	createUsername?: FieldPolicy<any> | FieldReadFunction<any>
