@@ -44,18 +44,18 @@ const Auth: React.FunctionComponent<IAppProps> = ({
         });
       } else {
         toast({
-          title: 'Username created.',
+          title: 'Create username failed.',
           description: response.data?.createUsername.message,
           status: 'error',
           duration: 3000,
           isClosable: true,
         });
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error!',
-        description: error.message,
+        description:
+          error instanceof Error ? error.message : 'Something went wrong',
         status: 'error',
         duration: 3000,
         isClosable: true,

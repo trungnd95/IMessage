@@ -1,6 +1,7 @@
 import FormInputField from '@/components/Common/FormInputField';
 import {
   User,
+  useCreateConversationMutation,
   useSearchUsersLazyQuery,
 } from '@/graphql-client/generated/graphql';
 import { SmallCloseIcon } from '@chakra-ui/icons';
@@ -20,8 +21,10 @@ import {
   ModalOverlay,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { useSession } from 'next-auth/react';
 //import { User } from 'next-auth';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -32,11 +35,67 @@ type CreateModalProps = {
 };
 
 export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
+  const toast = useToast();
+
+  /// Graphql query
   const [searchUsers, { loading, error }] = useSearchUsersLazyQuery();
+  const [
+    createConversation,
+    { loading: createConversationLoading, error: createConversationError },
+  ] = useCreateConversationMutation();
+
+  /// Component state
   const [searchedUsers, setSearchedUsers] = useState<Array<User> | undefined>(
     undefined,
   );
   const [selectedUsers, setSelectedUsers] = useState<Array<User>>([]);
+
+  const { data: session } = useSession();
+
+  /// Callback handlers
+  const handleCreateConversation = async () => {
+    /// Get list selected users id & current user id.
+    const participantIds = [
+      ...selectedUsers.map((user) => user.id),
+      session?.user.id as string,
+    ];
+
+    /// Call api
+    try {
+      const response = await createConversation({
+        variables: {
+          participantIds,
+        },
+      });
+      if (response.data?.createConversation?.success) {
+        toast({
+          title: 'Conversation created.',
+          description: response.data.createConversation.message,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Create conversation failed.',
+          description: response.data?.createConversation?.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error!',
+        description:
+          error instanceof Error ? error.message : 'Something went wrong',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -88,11 +147,13 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
             )}
           </Formik>
           {/* Query result */}
-          {error && (
+          {(error || createConversationError) && (
             <Text
               fontSize="xl"
               color="red.500"
-            >{`Failed to request to server. ${error}`}</Text>
+            >{`Failed to request to server. ${
+              error || createConversationError
+            }`}</Text>
           )}
           <Box mt={4}>
             {searchedUsers &&
@@ -181,6 +242,8 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
             color="whiteAlpha.900"
             isDisabled={selectedUsers.length == 0}
             _hover={{ bgColor: 'green.800' }}
+            onClick={handleCreateConversation}
+            isLoading={createConversationLoading}
           >
             Create converstation
           </Button>

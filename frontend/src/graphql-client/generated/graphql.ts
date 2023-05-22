@@ -17,9 +17,22 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type ConversationMutationResponse = MutationResponse & {
+  __typename?: 'ConversationMutationResponse';
+  code: Scalars['Float'];
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createConversation?: Maybe<ConversationMutationResponse>;
   createUsername: UserMutationResponse;
+};
+
+
+export type MutationCreateConversationArgs = {
+  participantIds: Array<Scalars['String']>;
 };
 
 
@@ -68,6 +81,13 @@ export type CreateUsernameMutationVariables = Exact<{
 
 export type CreateUsernameMutation = { __typename?: 'Mutation', createUsername: { __typename?: 'UserMutationResponse', message?: string | null, success: boolean, code: number } };
 
+export type CreateConversationMutationVariables = Exact<{
+  participantIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type CreateConversationMutation = { __typename?: 'Mutation', createConversation?: { __typename?: 'ConversationMutationResponse', code: number, success: boolean, message?: string | null } | null };
+
 export type SearchUsersQueryVariables = Exact<{
   searchUsername: Scalars['String'];
 }>;
@@ -111,6 +131,41 @@ export function useCreateUsernameMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateUsernameMutationHookResult = ReturnType<typeof useCreateUsernameMutation>;
 export type CreateUsernameMutationResult = Apollo.MutationResult<CreateUsernameMutation>;
 export type CreateUsernameMutationOptions = Apollo.BaseMutationOptions<CreateUsernameMutation, CreateUsernameMutationVariables>;
+export const CreateConversationDocument = gql`
+    mutation createConversation($participantIds: [String!]!) {
+  createConversation(participantIds: $participantIds) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type CreateConversationMutationFn = Apollo.MutationFunction<CreateConversationMutation, CreateConversationMutationVariables>;
+
+/**
+ * __useCreateConversationMutation__
+ *
+ * To run a mutation, you first call `useCreateConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createConversationMutation, { data, loading, error }] = useCreateConversationMutation({
+ *   variables: {
+ *      participantIds: // value for 'participantIds'
+ *   },
+ * });
+ */
+export function useCreateConversationMutation(baseOptions?: Apollo.MutationHookOptions<CreateConversationMutation, CreateConversationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateConversationMutation, CreateConversationMutationVariables>(CreateConversationDocument, options);
+      }
+export type CreateConversationMutationHookResult = ReturnType<typeof useCreateConversationMutation>;
+export type CreateConversationMutationResult = Apollo.MutationResult<CreateConversationMutation>;
+export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<CreateConversationMutation, CreateConversationMutationVariables>;
 export const SearchUsersDocument = gql`
     query SearchUsers($searchUsername: String!) {
   searchUsers(usernameSearch: $searchUsername) {
@@ -150,8 +205,15 @@ export function useSearchUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
 export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
 export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
-export type MutationKeySpecifier = ('createUsername' | MutationKeySpecifier)[];
+export type ConversationMutationResponseKeySpecifier = ('code' | 'message' | 'success' | ConversationMutationResponseKeySpecifier)[];
+export type ConversationMutationResponseFieldPolicy = {
+	code?: FieldPolicy<any> | FieldReadFunction<any>,
+	message?: FieldPolicy<any> | FieldReadFunction<any>,
+	success?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MutationKeySpecifier = ('createConversation' | 'createUsername' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
+	createConversation?: FieldPolicy<any> | FieldReadFunction<any>,
 	createUsername?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MutationResponseKeySpecifier = ('code' | 'message' | 'success' | MutationResponseKeySpecifier)[];
@@ -181,6 +243,10 @@ export type UserMutationResponseFieldPolicy = {
 	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type StrictTypedTypePolicies = {
+	ConversationMutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ConversationMutationResponseKeySpecifier | (() => undefined | ConversationMutationResponseKeySpecifier),
+		fields?: ConversationMutationResponseFieldPolicy,
+	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
 		fields?: MutationFieldPolicy,

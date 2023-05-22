@@ -5,3 +5,11 @@ mutation createUsername($username: String!) {
     code
   }
 }
+
+mutation createConversation($participantIds: [String!]!) {
+  createConversation(participantIds: $participantIds) {
+    code
+    success
+    message
+  }
+}
