@@ -26,7 +26,6 @@ interface MutationResponse {
 }
 
 type Query {
-  hello: String!
   searchUsers(usernameSearch: String!): [User!]!
 }
 

@@ -12,7 +12,6 @@ import { buildSchema } from 'type-graphql';
 import { Context, Session } from './lib/common-type';
 import { ConversationResolver } from './modules/conversation/conversation.resolver';
 import UserResolver from './modules/user/user.resolver';
-import { HelloResolver } from './resolvers/Hello';
 
 const main = async () => {
   // Express server
@@ -22,7 +21,7 @@ const main = async () => {
   // Apollo server
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, ConversationResolver, UserResolver],
+      resolvers: [UserResolver, ConversationResolver, UserResolver],
       emitSchemaFile: true,
       validate: false,
     }),
