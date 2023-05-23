@@ -17,11 +17,30 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Conversation = {
+  __typename?: 'Conversation';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  lastestMessage?: Maybe<Message>;
+  participants: Array<Participant>;
+  updatedAt: Scalars['DateTime'];
+};
+
 export type ConversationMutationResponse = MutationResponse & {
   __typename?: 'ConversationMutationResponse';
   code: Scalars['Float'];
+  conversation?: Maybe<Conversation>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  body: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  sender: User;
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Mutation = {
@@ -46,9 +65,14 @@ export type MutationResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Participant = {
+  __typename?: 'Participant';
+  hasUnseenLastestMessage: Scalars['Boolean'];
+  participant: User;
+};
+
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
   searchUsers: Array<User>;
 };
 
@@ -72,7 +96,14 @@ export type UserMutationResponse = MutationResponse & {
   code: Scalars['Float'];
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  user: User;
 };
+
+export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any };
+
+export type UserFieldsFragment = { __typename?: 'User', id: string, name: string, email: string, username: string, image: string };
+
+export type ConversationFieldsFragment = { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any };
 
 export type CreateUsernameMutationVariables = Exact<{
   username: Scalars['String'];
@@ -86,16 +117,39 @@ export type CreateConversationMutationVariables = Exact<{
 }>;
 
 
-export type CreateConversationMutation = { __typename?: 'Mutation', createConversation?: { __typename?: 'ConversationMutationResponse', code: number, success: boolean, message?: string | null } | null };
+export type CreateConversationMutation = { __typename?: 'Mutation', createConversation?: { __typename?: 'ConversationMutationResponse', code: number, success: boolean, message?: string | null, conversation?: { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any } | null } | null };
 
 export type SearchUsersQueryVariables = Exact<{
   searchUsername: Scalars['String'];
 }>;
 
 
-export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', email: string, id: string, image: string, name: string, username: string }> };
+export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', id: string, name: string, email: string, username: string, image: string }> };
 
-
+export const MessageFieldsFragmentDoc = gql`
+    fragment messageFields on Message {
+  id
+  body
+  createdAt
+  updatedAt
+}
+    `;
+export const UserFieldsFragmentDoc = gql`
+    fragment userFields on User {
+  id
+  name
+  email
+  username
+  image
+}
+    `;
+export const ConversationFieldsFragmentDoc = gql`
+    fragment conversationFields on Conversation {
+  id
+  createdAt
+  updatedAt
+}
+    `;
 export const CreateUsernameDocument = gql`
     mutation createUsername($username: String!) {
   createUsername(username: $username) {
@@ -137,9 +191,12 @@ export const CreateConversationDocument = gql`
     code
     success
     message
+    conversation {
+      ...conversationFields
+    }
   }
 }
-    `;
+    ${ConversationFieldsFragmentDoc}`;
 export type CreateConversationMutationFn = Apollo.MutationFunction<CreateConversationMutation, CreateConversationMutationVariables>;
 
 /**
@@ -169,14 +226,10 @@ export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<Creat
 export const SearchUsersDocument = gql`
     query SearchUsers($searchUsername: String!) {
   searchUsers(usernameSearch: $searchUsername) {
-    email
-    id
-    image
-    name
-    username
+    ...userFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 
 /**
  * __useSearchUsersQuery__
@@ -205,11 +258,28 @@ export function useSearchUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
 export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
 export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
-export type ConversationMutationResponseKeySpecifier = ('code' | 'message' | 'success' | ConversationMutationResponseKeySpecifier)[];
+export type ConversationKeySpecifier = ('createdAt' | 'id' | 'lastestMessage' | 'participants' | 'updatedAt' | ConversationKeySpecifier)[];
+export type ConversationFieldPolicy = {
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	lastestMessage?: FieldPolicy<any> | FieldReadFunction<any>,
+	participants?: FieldPolicy<any> | FieldReadFunction<any>,
+	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ConversationMutationResponseKeySpecifier = ('code' | 'conversation' | 'message' | 'success' | ConversationMutationResponseKeySpecifier)[];
 export type ConversationMutationResponseFieldPolicy = {
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
+	conversation?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MessageKeySpecifier = ('body' | 'createdAt' | 'id' | 'sender' | 'updatedAt' | MessageKeySpecifier)[];
+export type MessageFieldPolicy = {
+	body?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	sender?: FieldPolicy<any> | FieldReadFunction<any>,
+	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MutationKeySpecifier = ('createConversation' | 'createUsername' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
@@ -222,9 +292,13 @@ export type MutationResponseFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('hello' | 'searchUsers' | QueryKeySpecifier)[];
+export type ParticipantKeySpecifier = ('hasUnseenLastestMessage' | 'participant' | ParticipantKeySpecifier)[];
+export type ParticipantFieldPolicy = {
+	hasUnseenLastestMessage?: FieldPolicy<any> | FieldReadFunction<any>,
+	participant?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type QueryKeySpecifier = ('searchUsers' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
-	hello?: FieldPolicy<any> | FieldReadFunction<any>,
 	searchUsers?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserKeySpecifier = ('email' | 'emailVerified' | 'id' | 'image' | 'name' | 'username' | UserKeySpecifier)[];
@@ -236,16 +310,25 @@ export type UserFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	username?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type UserMutationResponseKeySpecifier = ('code' | 'message' | 'success' | UserMutationResponseKeySpecifier)[];
+export type UserMutationResponseKeySpecifier = ('code' | 'message' | 'success' | 'user' | UserMutationResponseKeySpecifier)[];
 export type UserMutationResponseFieldPolicy = {
 	code?: FieldPolicy<any> | FieldReadFunction<any>,
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
-	success?: FieldPolicy<any> | FieldReadFunction<any>
+	success?: FieldPolicy<any> | FieldReadFunction<any>,
+	user?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type StrictTypedTypePolicies = {
+	Conversation?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier),
+		fields?: ConversationFieldPolicy,
+	},
 	ConversationMutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ConversationMutationResponseKeySpecifier | (() => undefined | ConversationMutationResponseKeySpecifier),
 		fields?: ConversationMutationResponseFieldPolicy,
+	},
+	Message?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier),
+		fields?: MessageFieldPolicy,
 	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
@@ -254,6 +337,10 @@ export type StrictTypedTypePolicies = {
 	MutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationResponseKeySpecifier | (() => undefined | MutationResponseKeySpecifier),
 		fields?: MutationResponseFieldPolicy,
+	},
+	Participant?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ParticipantKeySpecifier | (() => undefined | ParticipantKeySpecifier),
+		fields?: ParticipantFieldPolicy,
 	},
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),

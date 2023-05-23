@@ -1,16 +1,9 @@
 import { MutationResponse } from '@/lib/common-type';
 import { Field, ID, ObjectType } from 'type-graphql';
 
-@ObjectType({ implements: MutationResponse })
-export class UserMutationResponse implements MutationResponse {
-  code: number;
-  success: boolean;
-  message?: string | undefined;
-}
-
 @ObjectType()
 export class User {
-  @Field(() => ID, { nullable: false })
+  @Field(() => ID)
   id: string;
 
   @Field(() => String)
@@ -27,4 +20,14 @@ export class User {
 
   @Field(() => String)
   image: string | null;
+}
+
+@ObjectType({ implements: MutationResponse })
+export class UserMutationResponse implements MutationResponse {
+  code: number;
+  success: boolean;
+  message?: string | undefined;
+
+  @Field(() => User)
+  user?: User;
 }

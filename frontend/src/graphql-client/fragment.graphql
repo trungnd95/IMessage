@@ -1,0 +1,20 @@
+fragment messageFields on Message {
+  id
+  body
+  createdAt
+  updatedAt
+}
+
+fragment userFields on User {
+  id
+  name
+  email
+  username
+  image
+}
+
+fragment conversationFields on Conversation {
+  id
+  createdAt
+  updatedAt
+}

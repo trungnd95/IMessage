@@ -11,5 +11,8 @@ mutation createConversation($participantIds: [String!]!) {
     code
     success
     message
+    conversation {
+      ...conversationFields
+    }
   }
 }

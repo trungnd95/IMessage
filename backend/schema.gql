@@ -3,8 +3,17 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Conversation {
+  createdAt: DateTime!
+  id: ID!
+  lastestMessage: Message
+  participants: [Participant!]!
+  updatedAt: DateTime!
+}
+
 type ConversationMutationResponse implements MutationResponse {
   code: Float!
+  conversation: Conversation
   message: String
   success: Boolean!
 }
@@ -13,6 +22,14 @@ type ConversationMutationResponse implements MutationResponse {
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
 scalar DateTime
+
+type Message {
+  body: String!
+  createdAt: DateTime!
+  id: String!
+  sender: User!
+  updatedAt: DateTime!
+}
 
 type Mutation {
   createConversation(participantIds: [String!]!): ConversationMutationResponse
@@ -23,6 +40,11 @@ interface MutationResponse {
   code: Float!
   message: String
   success: Boolean!
+}
+
+type Participant {
+  hasUnseenLastestMessage: Boolean!
+  participant: User!
 }
 
 type Query {
@@ -42,4 +64,5 @@ type UserMutationResponse implements MutationResponse {
   code: Float!
   message: String
   success: Boolean!
+  user: User!
 }

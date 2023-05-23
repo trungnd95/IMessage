@@ -25,6 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 //import { User } from 'next-auth';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -35,7 +36,9 @@ type CreateModalProps = {
 };
 
 export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
+  /// Libs
   const toast = useToast();
+  const router = useRouter();
 
   /// Graphql query
   const [searchUsers, { loading, error }] = useSearchUsersLazyQuery();
@@ -56,7 +59,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
   const handleCreateConversation = async () => {
     /// Get list selected users id & current user id.
     const participantIds = [
-      ...selectedUsers.map((user) => user.id),
+      ...selectedUsers!.map((user) => user.id),
       session?.user.id as string,
     ];
 
@@ -68,6 +71,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
         },
       });
       if (response.data?.createConversation?.success) {
+        /// Give toast alert message
         toast({
           title: 'Conversation created.',
           description: response.data.createConversation.message,
@@ -75,7 +79,19 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
           duration: 3000,
           isClosable: true,
         });
+        /// Push conversation id to router param
+        router.push({
+          query: {
+            conversationId: response.data.createConversation.conversation?.id,
+          },
+        });
+
+        /// Clean state & close modal
+        onClose();
+        setSearchedUsers(undefined);
+        setSelectedUsers([]);
       } else {
+        /// Give toast alert message
         toast({
           title: 'Create conversation failed.',
           description: response.data?.createConversation?.message,

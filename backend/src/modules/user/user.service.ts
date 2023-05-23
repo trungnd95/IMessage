@@ -21,7 +21,7 @@ export async function findUniqueUser(username: string) {
  * @returns
  */
 export async function updateUser(userId: string, userData: User) {
-  await prisma.user.update({
+  return await prisma.user.update({
     where: {
       id: userId,
     },

@@ -33,11 +33,12 @@ export default class UserResolver {
         };
 
       /// If username is not existed, create a new one
-      await updateUser(session?.user?.id as string, { username } as User);
+      const user = await updateUser(session?.user?.id as string, { username } as User);
       return {
         code: 200,
         success: true,
         message: 'Username created successfully',
+        user,
       };
     } catch (err) {
       return {
