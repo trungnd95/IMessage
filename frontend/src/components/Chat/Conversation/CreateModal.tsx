@@ -59,7 +59,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
   const handleCreateConversation = async () => {
     /// Get list selected users id & current user id.
     const participantIds = [
-      ...selectedUsers!.map((user) => user.id),
+      ...selectedUsers.map((user) => user.id),
       session?.user.id as string,
     ];
 
@@ -87,9 +87,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
         });
 
         /// Clean state & close modal
-        onClose();
-        setSearchedUsers(undefined);
-        setSelectedUsers([]);
+        cleanState();
       } else {
         /// Give toast alert message
         toast({
@@ -112,12 +110,18 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
     }
   };
 
+  const cleanState = () => {
+    onClose();
+    setSearchedUsers(undefined);
+    setSelectedUsers([]);
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg="whiteAlpha.200">
         <ModalHeader>Create converstation</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton onClick={cleanState} />
         <ModalBody>
           <Formik
             initialValues={{ searchUsername: '' }}
@@ -246,7 +250,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
             bgColor="red.600"
             _hover={{ bgColor: 'red.800' }}
             mr={3}
-            onClick={onClose}
+            onClick={cleanState}
             w="50%"
           >
             Close

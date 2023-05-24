@@ -1,10 +1,9 @@
 import { Context } from '@/lib/common-type';
-import prisma from '@/lib/prismaClient';
 import { CheckAuth } from '@/middlewares/checkAuth';
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { User, UserMutationResponse } from './user.dto';
-import { findUniqueUser, updateUser } from './user.service';
+import { findUniqueUser, findUsersByUsername, updateUser } from './user.service';
 
 @Resolver()
 export default class UserResolver {
@@ -52,7 +51,7 @@ export default class UserResolver {
   @Query(() => [User])
   @UseMiddleware(CheckAuth)
   async searchUsers(
-    @Arg('usernameSearch', () => String, { nullable: false }) usernameSearch: string,
+    @Arg('searchUsername', () => String, { nullable: false }) searchUsername: string,
     @Ctx() { session }: Context,
   ): Promise<Array<User>> {
     try {
@@ -60,18 +59,7 @@ export default class UserResolver {
       // if (!session?.user) throw new GraphQLError('User not authenticated');
 
       /// Query users with username
-      const myUsername = session?.user?.username;
-
-      const findUsers = await prisma.user.findMany({
-        where: {
-          username: {
-            contains: usernameSearch,
-            not: myUsername,
-            mode: 'insensitive',
-          },
-        },
-      });
-      return findUsers;
+      return await findUsersByUsername(searchUsername, session?.user as User);
     } catch (err) {
       throw new GraphQLError(err.message);
     }

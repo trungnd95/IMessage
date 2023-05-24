@@ -48,7 +48,8 @@ type Participant {
 }
 
 type Query {
-  searchUsers(usernameSearch: String!): [User!]!
+  getConversations: [Conversation!]!
+  searchUsers(searchUsername: String!): [User!]!
 }
 
 type User {

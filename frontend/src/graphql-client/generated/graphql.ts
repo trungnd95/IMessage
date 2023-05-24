@@ -73,12 +73,13 @@ export type Participant = {
 
 export type Query = {
   __typename?: 'Query';
+  getConversations: Array<Conversation>;
   searchUsers: Array<User>;
 };
 
 
 export type QuerySearchUsersArgs = {
-  usernameSearch: Scalars['String'];
+  searchUsername: Scalars['String'];
 };
 
 export type User = {
@@ -225,7 +226,7 @@ export type CreateConversationMutationResult = Apollo.MutationResult<CreateConve
 export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<CreateConversationMutation, CreateConversationMutationVariables>;
 export const SearchUsersDocument = gql`
     query SearchUsers($searchUsername: String!) {
-  searchUsers(usernameSearch: $searchUsername) {
+  searchUsers(searchUsername: $searchUsername) {
     ...userFields
   }
 }
@@ -297,8 +298,9 @@ export type ParticipantFieldPolicy = {
 	hasUnseenLastestMessage?: FieldPolicy<any> | FieldReadFunction<any>,
 	participant?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('searchUsers' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('getConversations' | 'searchUsers' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
+	getConversations?: FieldPolicy<any> | FieldReadFunction<any>,
 	searchUsers?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserKeySpecifier = ('email' | 'emailVerified' | 'id' | 'image' | 'name' | 'username' | UserKeySpecifier)[];

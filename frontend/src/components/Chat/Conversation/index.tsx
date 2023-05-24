@@ -1,6 +1,6 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
-import CreateModal from './CreateModal/CreateModal';
+import CreateModal from './CreateModal';
 
 type Props = {};
 

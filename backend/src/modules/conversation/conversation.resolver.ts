@@ -1,7 +1,9 @@
+import { Context } from '@/lib/common-type';
 import { CheckAuth } from '@/middlewares/checkAuth';
-import { Arg, Mutation, Resolver, UseMiddleware } from 'type-graphql';
-import { ConversationMutationResponse } from './conversation.dto';
-import { createConversation } from './conversation.service';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { User } from '../user/user.dto';
+import { Conversation, ConversationMutationResponse } from './conversation.dto';
+import { createConversation, getConversations } from './conversation.service';
 
 @Resolver()
 export class ConversationResolver {
@@ -25,6 +27,16 @@ export class ConversationResolver {
         success: false,
         message: error instanceof Error ? error.message : 'Internal error occurred',
       };
+    }
+  }
+
+  @Query(() => [Conversation])
+  @UseMiddleware(CheckAuth)
+  async getConversations(@Ctx() { session }: Context) {
+    try {
+      return await getConversations(session?.user as User);
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }
