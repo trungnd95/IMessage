@@ -100,9 +100,9 @@ export type UserMutationResponse = MutationResponse & {
   user: User;
 };
 
-export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any };
-
 export type UserFieldsFragment = { __typename?: 'User', id: string, name: string, email: string, username: string, image: string };
+
+export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } };
 
 export type ConversationFieldsFragment = { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any };
 
@@ -127,14 +127,11 @@ export type SearchUsersQueryVariables = Exact<{
 
 export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', id: string, name: string, email: string, username: string, image: string }> };
 
-export const MessageFieldsFragmentDoc = gql`
-    fragment messageFields on Message {
-  id
-  body
-  createdAt
-  updatedAt
-}
-    `;
+export type GetConversationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetConversationsQuery = { __typename?: 'Query', getConversations: Array<{ __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> }> };
+
 export const UserFieldsFragmentDoc = gql`
     fragment userFields on User {
   id
@@ -144,6 +141,17 @@ export const UserFieldsFragmentDoc = gql`
   image
 }
     `;
+export const MessageFieldsFragmentDoc = gql`
+    fragment messageFields on Message {
+  id
+  body
+  createdAt
+  updatedAt
+  sender {
+    ...userFields
+  }
+}
+    ${UserFieldsFragmentDoc}`;
 export const ConversationFieldsFragmentDoc = gql`
     fragment conversationFields on Conversation {
   id
@@ -259,6 +267,51 @@ export function useSearchUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
 export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
 export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
+export const GetConversationsDocument = gql`
+    query GetConversations {
+  getConversations {
+    ...conversationFields
+    lastestMessage {
+      ...messageFields
+    }
+    participants {
+      hasUnseenLastestMessage
+      participant {
+        ...userFields
+      }
+    }
+  }
+}
+    ${ConversationFieldsFragmentDoc}
+${MessageFieldsFragmentDoc}
+${UserFieldsFragmentDoc}`;
+
+/**
+ * __useGetConversationsQuery__
+ *
+ * To run a query within a React component, call `useGetConversationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetConversationsQuery(baseOptions?: Apollo.QueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetConversationsQuery, GetConversationsQueryVariables>(GetConversationsDocument, options);
+      }
+export function useGetConversationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetConversationsQuery, GetConversationsQueryVariables>(GetConversationsDocument, options);
+        }
+export type GetConversationsQueryHookResult = ReturnType<typeof useGetConversationsQuery>;
+export type GetConversationsLazyQueryHookResult = ReturnType<typeof useGetConversationsLazyQuery>;
+export type GetConversationsQueryResult = Apollo.QueryResult<GetConversationsQuery, GetConversationsQueryVariables>;
 export type ConversationKeySpecifier = ('createdAt' | 'id' | 'lastestMessage' | 'participants' | 'updatedAt' | ConversationKeySpecifier)[];
 export type ConversationFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,

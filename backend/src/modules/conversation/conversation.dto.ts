@@ -27,7 +27,7 @@ export class Conversation {
   updatedAt: Date;
 
   @Field(() => Message, { nullable: true })
-  lastestMessage: Message | null;
+  lastestMessage?: Message | null;
 }
 
 @ObjectType({ implements: MutationResponse })

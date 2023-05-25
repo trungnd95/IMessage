@@ -1,16 +1,19 @@
-fragment messageFields on Message {
-  id
-  body
-  createdAt
-  updatedAt
-}
-
 fragment userFields on User {
   id
   name
   email
   username
   image
+}
+
+fragment messageFields on Message {
+  id
+  body
+  createdAt
+  updatedAt
+  sender {
+    ...userFields
+  }
 }
 
 fragment conversationFields on Conversation {
