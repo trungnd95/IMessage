@@ -52,6 +52,10 @@ type Query {
   searchUsers(searchUsername: String!): [User!]!
 }
 
+type Subscription {
+  subcribeNewConversationCreated: Conversation!
+}
+
 type User {
   email: String!
   emailVerified: DateTime

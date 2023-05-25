@@ -4,28 +4,58 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import { useServer } from 'graphql-ws/lib/use/ws';
 import http from 'http';
 import 'module-alias/register';
 import { getSession } from 'next-auth/react';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
+import { WebSocketServer } from 'ws';
 import { Context, Session } from './lib/common-type';
 import { ConversationResolver } from './modules/conversation/conversation.resolver';
 import UserResolver from './modules/user/user.resolver';
 
 const main = async () => {
-  // Express server
+  /// Express server
   const app = express();
   const httpServer = http.createServer(app);
 
+  /// Build schema
+  const schema = await buildSchema({
+    resolvers: [UserResolver, ConversationResolver, UserResolver],
+    emitSchemaFile: true,
+    validate: false,
+  });
+
+  /// Creating the WebSocket server
+  const wsServer = new WebSocketServer({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if app.use
+    // serves expressMiddleware at a different path
+    path: '/graphql/subcriptions',
+  });
+
+  /// Hand in the schema we just created and have the
+  /// WebSocketServer start listening.
+  const serverCleanup = useServer({ schema }, wsServer);
+
   // Apollo server
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [UserResolver, ConversationResolver, UserResolver],
-      emitSchemaFile: true,
-      validate: false,
-    }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      // Proper shutdown for the WebSocket server.
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
   await apolloServer.start();
   app.use(
