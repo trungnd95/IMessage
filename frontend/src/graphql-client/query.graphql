@@ -1,5 +1,22 @@
+# Search users by username text
 query SearchUsers($searchUsername: String!) {
   searchUsers(searchUsername: $searchUsername) {
     ...userFields
+  }
+}
+
+# Get all conversations of current user
+query GetConversations {
+  getConversations {
+    ...conversationFields
+    lastestMessage {
+      ...messageFields
+    }
+    participants {
+      hasUnseenLastestMessage
+      participant {
+        ...userFields
+      }
+    }
   }
 }

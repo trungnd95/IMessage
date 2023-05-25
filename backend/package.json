@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/node": "^18.15.11",
+    "@types/ws": "^8.5.4",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.22",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.6.0",
+    "@graphql-tools/schema": "^10.0.0",
     "@prisma/client": "^4.14.0",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
@@ -32,11 +34,14 @@
     "eslint": "^8.37.0",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.13.1",
     "module-alias": "^2.2.2",
     "next-auth": "4.20.1",
     "react": "^18.2.0",
     "reflect-metadata": "^0.1.13",
-    "type-graphql": "2.0.0-beta.1"
+    "type-graphql": "2.0.0-beta.1",
+    "ws": "^8.13.0"
   },
   "_moduleAliases": {
     "@": "dist"
