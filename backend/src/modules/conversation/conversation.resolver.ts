@@ -3,11 +3,13 @@ import { CheckAuth } from '@/middlewares/checkAuth';
 import { PubSubEngine } from 'graphql-subscriptions';
 import {
   Arg,
+  ArgsDictionary,
   Ctx,
   Mutation,
   PubSub,
   Query,
   Resolver,
+  ResolverFilterData,
   Root,
   Subscription,
   UseMiddleware,
@@ -72,7 +74,14 @@ export class ConversationResolver {
    * @param conversation
    * @returns
    */
-  @Subscription(() => Conversation, { topics: CONVERSATION_CREATED })
+  @UseMiddleware(CheckAuth)
+  @Subscription(() => Conversation, {
+    topics: CONVERSATION_CREATED,
+    filter: ({ payload, context }: ResolverFilterData<Conversation, ArgsDictionary, Context>) => {
+      const currentUserId = context.session?.user?.id;
+      return !!payload.participants.find((each) => each.participant.id === currentUserId);
+    },
+  })
   subcribeNewConversationCreated(@Root() conversation: Conversation): Conversation {
     return conversation;
   }

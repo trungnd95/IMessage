@@ -11,7 +11,7 @@ import { getSession } from 'next-auth/react';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { WebSocketServer } from 'ws';
-import { Context, Session } from './lib/common-type';
+import { Context, Session, SubscriptionContext } from './lib/common-type';
 import { ConversationResolver } from './modules/conversation/conversation.resolver';
 import UserResolver from './modules/user/user.resolver';
 
@@ -38,7 +38,29 @@ const main = async () => {
 
   /// Hand in the schema we just created and have the
   /// WebSocketServer start listening.
-  const serverCleanup = useServer({ schema }, wsServer);
+  const getSubscriptionContext = async (ctx: SubscriptionContext): Promise<Context> => {
+    ctx;
+    // ctx is the graphql-ws Context where connectionParams live
+    if (ctx.connectionParams && ctx.connectionParams.session) {
+      const { session } = ctx.connectionParams;
+      return { session };
+    }
+    // Otherwise let our resolvers know we don't have a current user
+    return { session: null };
+  };
+
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: (ctx: SubscriptionContext) => {
+        // This will be run every time the client sends a subscription request
+        // Returning an object will add that information to our
+        // GraphQL context, which all of our resolvers have access to.
+        return getSubscriptionContext(ctx);
+      },
+    },
+    wsServer,
+  );
 
   // Apollo server
   const apolloServer = new ApolloServer({

@@ -21,3 +21,9 @@ export interface Session {
 export type Context = {
   session: Session | null;
 };
+
+export type SubscriptionContext = {
+  connectionParams: {
+    session?: Session;
+  };
+};
