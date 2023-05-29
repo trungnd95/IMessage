@@ -14,7 +14,7 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import ConversationItem from './ConversationItem';
 import CreateModal from './CreateModal';
@@ -24,6 +24,7 @@ type Props = {};
 export default function Conversation({}: Props) {
   /// Libs
   const toast = useToast();
+  const eventSubcribedRef = useRef(false);
 
   /// Component states
   const [modalOpen, setModalOpen] = useState(false);
@@ -62,9 +63,11 @@ export default function Conversation({}: Props) {
     });
   };
   useEffect(() => {
-    console.log('Component render....!');
-    subscribeToUpdateListConversations();
-    subscribeToUpdateListConversations();
+    if (!eventSubcribedRef.current) {
+      console.log('Component render....!');
+      subscribeToUpdateListConversations();
+      eventSubcribedRef.current = true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -94,7 +97,12 @@ export default function Conversation({}: Props) {
           onClick={() => setModalOpen(true)}
           leftIcon={<AiOutlineSearch size={17} style={{ display: 'inline' }} />}
         >
-          <Text color="whiteAlpha.600" fontWeight={500}>
+          <Text
+            color="whiteAlpha.600"
+            fontWeight={500}
+            isTruncated
+            //noOfLines={1}
+          >
             Find or start a conversation
           </Text>
         </Button>
