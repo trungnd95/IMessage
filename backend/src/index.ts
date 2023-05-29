@@ -33,7 +33,7 @@ const main = async () => {
     server: httpServer,
     // Pass a different path here if app.use
     // serves expressMiddleware at a different path
-    path: '/graphql/subcriptions',
+    path: '/graphql/subscriptions',
   });
 
   /// Hand in the schema we just created and have the

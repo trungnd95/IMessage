@@ -1,11 +1,22 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+import { gql } from '@apollo/client';
+import {
+  FieldPolicy,
+  FieldReadFunction,
+  TypePolicies,
+  TypePolicy,
+} from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -49,11 +60,9 @@ export type Mutation = {
   createUsername: UserMutationResponse;
 };
 
-
 export type MutationCreateConversationArgs = {
   participantIds: Array<Scalars['String']>;
 };
-
 
 export type MutationCreateUsernameArgs = {
   username: Scalars['String'];
@@ -77,9 +86,13 @@ export type Query = {
   searchUsers: Array<User>;
 };
 
-
 export type QuerySearchUsersArgs = {
   searchUsername: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  subcribeNewConversationCreated: Conversation;
 };
 
 export type User = {
@@ -100,75 +113,209 @@ export type UserMutationResponse = MutationResponse & {
   user: User;
 };
 
-export type UserFieldsFragment = { __typename?: 'User', id: string, name: string, email: string, username: string, image: string };
+export type UserFieldsFragment = {
+  __typename?: 'User';
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  image: string;
+};
 
-export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } };
+export type MessageFieldsFragment = {
+  __typename?: 'Message';
+  id: string;
+  body: string;
+  createdAt: any;
+  updatedAt: any;
+  sender: {
+    __typename?: 'User';
+    id: string;
+    name: string;
+    email: string;
+    username: string;
+    image: string;
+  };
+};
 
-export type ConversationFieldsFragment = { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any };
+export type ConversationFieldsFragment = {
+  __typename?: 'Conversation';
+  id: string;
+  createdAt: any;
+  updatedAt: any;
+};
 
 export type CreateUsernameMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
 
-
-export type CreateUsernameMutation = { __typename?: 'Mutation', createUsername: { __typename?: 'UserMutationResponse', message?: string | null, success: boolean, code: number } };
+export type CreateUsernameMutation = {
+  __typename?: 'Mutation';
+  createUsername: {
+    __typename?: 'UserMutationResponse';
+    message?: string | null;
+    success: boolean;
+    code: number;
+  };
+};
 
 export type CreateConversationMutationVariables = Exact<{
   participantIds: Array<Scalars['String']> | Scalars['String'];
 }>;
 
-
-export type CreateConversationMutation = { __typename?: 'Mutation', createConversation?: { __typename?: 'ConversationMutationResponse', code: number, success: boolean, message?: string | null, conversation?: { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any } | null } | null };
+export type CreateConversationMutation = {
+  __typename?: 'Mutation';
+  createConversation?: {
+    __typename?: 'ConversationMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    conversation?: {
+      __typename?: 'Conversation';
+      id: string;
+      createdAt: any;
+      updatedAt: any;
+    } | null;
+  } | null;
+};
 
 export type SearchUsersQueryVariables = Exact<{
   searchUsername: Scalars['String'];
 }>;
 
+export type SearchUsersQuery = {
+  __typename?: 'Query';
+  searchUsers: Array<{
+    __typename?: 'User';
+    id: string;
+    name: string;
+    email: string;
+    username: string;
+    image: string;
+  }>;
+};
 
-export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __typename?: 'User', id: string, name: string, email: string, username: string, image: string }> };
+export type GetConversationsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetConversationsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetConversationsQuery = {
+  __typename?: 'Query';
+  getConversations: Array<{
+    __typename?: 'Conversation';
+    id: string;
+    createdAt: any;
+    updatedAt: any;
+    lastestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body: string;
+      createdAt: any;
+      updatedAt: any;
+      sender: {
+        __typename?: 'User';
+        id: string;
+        name: string;
+        email: string;
+        username: string;
+        image: string;
+      };
+    } | null;
+    participants: Array<{
+      __typename?: 'Participant';
+      hasUnseenLastestMessage: boolean;
+      participant: {
+        __typename?: 'User';
+        id: string;
+        name: string;
+        email: string;
+        username: string;
+        image: string;
+      };
+    }>;
+  }>;
+};
 
+export type NewConversationCreatedSubSubscriptionVariables = Exact<{
+  [key: string]: never;
+}>;
 
-export type GetConversationsQuery = { __typename?: 'Query', getConversations: Array<{ __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> }> };
+export type NewConversationCreatedSubSubscription = {
+  __typename?: 'Subscription';
+  subcribeNewConversationCreated: {
+    __typename?: 'Conversation';
+    id: string;
+    createdAt: any;
+    updatedAt: any;
+    lastestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body: string;
+      createdAt: any;
+      updatedAt: any;
+      sender: {
+        __typename?: 'User';
+        id: string;
+        name: string;
+        email: string;
+        username: string;
+        image: string;
+      };
+    } | null;
+    participants: Array<{
+      __typename?: 'Participant';
+      hasUnseenLastestMessage: boolean;
+      participant: {
+        __typename?: 'User';
+        id: string;
+        name: string;
+        email: string;
+        username: string;
+        image: string;
+      };
+    }>;
+  };
+};
 
 export const UserFieldsFragmentDoc = gql`
-    fragment userFields on User {
-  id
-  name
-  email
-  username
-  image
-}
-    `;
+  fragment userFields on User {
+    id
+    name
+    email
+    username
+    image
+  }
+`;
 export const MessageFieldsFragmentDoc = gql`
-    fragment messageFields on Message {
-  id
-  body
-  createdAt
-  updatedAt
-  sender {
-    ...userFields
+  fragment messageFields on Message {
+    id
+    body
+    createdAt
+    updatedAt
+    sender {
+      ...userFields
+    }
   }
-}
-    ${UserFieldsFragmentDoc}`;
+  ${UserFieldsFragmentDoc}
+`;
 export const ConversationFieldsFragmentDoc = gql`
-    fragment conversationFields on Conversation {
-  id
-  createdAt
-  updatedAt
-}
-    `;
-export const CreateUsernameDocument = gql`
-    mutation createUsername($username: String!) {
-  createUsername(username: $username) {
-    message
-    success
-    code
+  fragment conversationFields on Conversation {
+    id
+    createdAt
+    updatedAt
   }
-}
-    `;
-export type CreateUsernameMutationFn = Apollo.MutationFunction<CreateUsernameMutation, CreateUsernameMutationVariables>;
+`;
+export const CreateUsernameDocument = gql`
+  mutation createUsername($username: String!) {
+    createUsername(username: $username) {
+      message
+      success
+      code
+    }
+  }
+`;
+export type CreateUsernameMutationFn = Apollo.MutationFunction<
+  CreateUsernameMutation,
+  CreateUsernameMutationVariables
+>;
 
 /**
  * __useCreateUsernameMutation__
@@ -187,26 +334,44 @@ export type CreateUsernameMutationFn = Apollo.MutationFunction<CreateUsernameMut
  *   },
  * });
  */
-export function useCreateUsernameMutation(baseOptions?: Apollo.MutationHookOptions<CreateUsernameMutation, CreateUsernameMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateUsernameMutation, CreateUsernameMutationVariables>(CreateUsernameDocument, options);
-      }
-export type CreateUsernameMutationHookResult = ReturnType<typeof useCreateUsernameMutation>;
-export type CreateUsernameMutationResult = Apollo.MutationResult<CreateUsernameMutation>;
-export type CreateUsernameMutationOptions = Apollo.BaseMutationOptions<CreateUsernameMutation, CreateUsernameMutationVariables>;
+export function useCreateUsernameMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateUsernameMutation,
+    CreateUsernameMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateUsernameMutation,
+    CreateUsernameMutationVariables
+  >(CreateUsernameDocument, options);
+}
+export type CreateUsernameMutationHookResult = ReturnType<
+  typeof useCreateUsernameMutation
+>;
+export type CreateUsernameMutationResult =
+  Apollo.MutationResult<CreateUsernameMutation>;
+export type CreateUsernameMutationOptions = Apollo.BaseMutationOptions<
+  CreateUsernameMutation,
+  CreateUsernameMutationVariables
+>;
 export const CreateConversationDocument = gql`
-    mutation createConversation($participantIds: [String!]!) {
-  createConversation(participantIds: $participantIds) {
-    code
-    success
-    message
-    conversation {
-      ...conversationFields
+  mutation createConversation($participantIds: [String!]!) {
+    createConversation(participantIds: $participantIds) {
+      code
+      success
+      message
+      conversation {
+        ...conversationFields
+      }
     }
   }
-}
-    ${ConversationFieldsFragmentDoc}`;
-export type CreateConversationMutationFn = Apollo.MutationFunction<CreateConversationMutation, CreateConversationMutationVariables>;
+  ${ConversationFieldsFragmentDoc}
+`;
+export type CreateConversationMutationFn = Apollo.MutationFunction<
+  CreateConversationMutation,
+  CreateConversationMutationVariables
+>;
 
 /**
  * __useCreateConversationMutation__
@@ -225,20 +390,35 @@ export type CreateConversationMutationFn = Apollo.MutationFunction<CreateConvers
  *   },
  * });
  */
-export function useCreateConversationMutation(baseOptions?: Apollo.MutationHookOptions<CreateConversationMutation, CreateConversationMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateConversationMutation, CreateConversationMutationVariables>(CreateConversationDocument, options);
-      }
-export type CreateConversationMutationHookResult = ReturnType<typeof useCreateConversationMutation>;
-export type CreateConversationMutationResult = Apollo.MutationResult<CreateConversationMutation>;
-export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<CreateConversationMutation, CreateConversationMutationVariables>;
-export const SearchUsersDocument = gql`
-    query SearchUsers($searchUsername: String!) {
-  searchUsers(searchUsername: $searchUsername) {
-    ...userFields
-  }
+export function useCreateConversationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateConversationMutation,
+    CreateConversationMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateConversationMutation,
+    CreateConversationMutationVariables
+  >(CreateConversationDocument, options);
 }
-    ${UserFieldsFragmentDoc}`;
+export type CreateConversationMutationHookResult = ReturnType<
+  typeof useCreateConversationMutation
+>;
+export type CreateConversationMutationResult =
+  Apollo.MutationResult<CreateConversationMutation>;
+export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<
+  CreateConversationMutation,
+  CreateConversationMutationVariables
+>;
+export const SearchUsersDocument = gql`
+  query SearchUsers($searchUsername: String!) {
+    searchUsers(searchUsername: $searchUsername) {
+      ...userFields
+    }
+  }
+  ${UserFieldsFragmentDoc}
+`;
 
 /**
  * __useSearchUsersQuery__
@@ -256,35 +436,57 @@ export const SearchUsersDocument = gql`
  *   },
  * });
  */
-export function useSearchUsersQuery(baseOptions: Apollo.QueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
-      }
-export function useSearchUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
-        }
+export function useSearchUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SearchUsersQuery,
+    SearchUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchUsersQuery, SearchUsersQueryVariables>(
+    SearchUsersDocument,
+    options,
+  );
+}
+export function useSearchUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SearchUsersQuery,
+    SearchUsersQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchUsersQuery, SearchUsersQueryVariables>(
+    SearchUsersDocument,
+    options,
+  );
+}
 export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
-export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
-export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
+export type SearchUsersLazyQueryHookResult = ReturnType<
+  typeof useSearchUsersLazyQuery
+>;
+export type SearchUsersQueryResult = Apollo.QueryResult<
+  SearchUsersQuery,
+  SearchUsersQueryVariables
+>;
 export const GetConversationsDocument = gql`
-    query GetConversations {
-  getConversations {
-    ...conversationFields
-    lastestMessage {
-      ...messageFields
-    }
-    participants {
-      hasUnseenLastestMessage
-      participant {
-        ...userFields
+  query GetConversations {
+    getConversations {
+      ...conversationFields
+      lastestMessage {
+        ...messageFields
+      }
+      participants {
+        hasUnseenLastestMessage
+        participant {
+          ...userFields
+        }
       }
     }
   }
-}
-    ${ConversationFieldsFragmentDoc}
-${MessageFieldsFragmentDoc}
-${UserFieldsFragmentDoc}`;
+  ${ConversationFieldsFragmentDoc}
+  ${MessageFieldsFragmentDoc}
+  ${UserFieldsFragmentDoc}
+`;
 
 /**
  * __useGetConversationsQuery__
@@ -301,113 +503,277 @@ ${UserFieldsFragmentDoc}`;
  *   },
  * });
  */
-export function useGetConversationsQuery(baseOptions?: Apollo.QueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetConversationsQuery, GetConversationsQueryVariables>(GetConversationsDocument, options);
+export function useGetConversationsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetConversationsQuery,
+    GetConversationsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetConversationsQuery, GetConversationsQueryVariables>(
+    GetConversationsDocument,
+    options,
+  );
+}
+export function useGetConversationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetConversationsQuery,
+    GetConversationsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetConversationsQuery,
+    GetConversationsQueryVariables
+  >(GetConversationsDocument, options);
+}
+export type GetConversationsQueryHookResult = ReturnType<
+  typeof useGetConversationsQuery
+>;
+export type GetConversationsLazyQueryHookResult = ReturnType<
+  typeof useGetConversationsLazyQuery
+>;
+export type GetConversationsQueryResult = Apollo.QueryResult<
+  GetConversationsQuery,
+  GetConversationsQueryVariables
+>;
+export const NewConversationCreatedSubDocument = gql`
+  subscription newConversationCreatedSub {
+    subcribeNewConversationCreated {
+      ...conversationFields
+      lastestMessage {
+        ...messageFields
       }
-export function useGetConversationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetConversationsQuery, GetConversationsQueryVariables>(GetConversationsDocument, options);
+      participants {
+        hasUnseenLastestMessage
+        participant {
+          ...userFields
         }
-export type GetConversationsQueryHookResult = ReturnType<typeof useGetConversationsQuery>;
-export type GetConversationsLazyQueryHookResult = ReturnType<typeof useGetConversationsLazyQuery>;
-export type GetConversationsQueryResult = Apollo.QueryResult<GetConversationsQuery, GetConversationsQueryVariables>;
-export type ConversationKeySpecifier = ('createdAt' | 'id' | 'lastestMessage' | 'participants' | 'updatedAt' | ConversationKeySpecifier)[];
+      }
+    }
+  }
+  ${ConversationFieldsFragmentDoc}
+  ${MessageFieldsFragmentDoc}
+  ${UserFieldsFragmentDoc}
+`;
+
+/**
+ * __useNewConversationCreatedSubSubscription__
+ *
+ * To run a query within a React component, call `useNewConversationCreatedSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewConversationCreatedSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewConversationCreatedSubSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewConversationCreatedSubSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    NewConversationCreatedSubSubscription,
+    NewConversationCreatedSubSubscriptionVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    NewConversationCreatedSubSubscription,
+    NewConversationCreatedSubSubscriptionVariables
+  >(NewConversationCreatedSubDocument, options);
+}
+export type NewConversationCreatedSubSubscriptionHookResult = ReturnType<
+  typeof useNewConversationCreatedSubSubscription
+>;
+export type NewConversationCreatedSubSubscriptionResult =
+  Apollo.SubscriptionResult<NewConversationCreatedSubSubscription>;
+export type ConversationKeySpecifier = (
+  | 'createdAt'
+  | 'id'
+  | 'lastestMessage'
+  | 'participants'
+  | 'updatedAt'
+  | ConversationKeySpecifier
+)[];
 export type ConversationFieldPolicy = {
-	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	lastestMessage?: FieldPolicy<any> | FieldReadFunction<any>,
-	participants?: FieldPolicy<any> | FieldReadFunction<any>,
-	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastestMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  participants?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ConversationMutationResponseKeySpecifier = ('code' | 'conversation' | 'message' | 'success' | ConversationMutationResponseKeySpecifier)[];
+export type ConversationMutationResponseKeySpecifier = (
+  | 'code'
+  | 'conversation'
+  | 'message'
+  | 'success'
+  | ConversationMutationResponseKeySpecifier
+)[];
 export type ConversationMutationResponseFieldPolicy = {
-	code?: FieldPolicy<any> | FieldReadFunction<any>,
-	conversation?: FieldPolicy<any> | FieldReadFunction<any>,
-	message?: FieldPolicy<any> | FieldReadFunction<any>,
-	success?: FieldPolicy<any> | FieldReadFunction<any>
+  code?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversation?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageKeySpecifier = ('body' | 'createdAt' | 'id' | 'sender' | 'updatedAt' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = (
+  | 'body'
+  | 'createdAt'
+  | 'id'
+  | 'sender'
+  | 'updatedAt'
+  | MessageKeySpecifier
+)[];
 export type MessageFieldPolicy = {
-	body?: FieldPolicy<any> | FieldReadFunction<any>,
-	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	sender?: FieldPolicy<any> | FieldReadFunction<any>,
-	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
+  body?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  sender?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MutationKeySpecifier = ('createConversation' | 'createUsername' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = (
+  | 'createConversation'
+  | 'createUsername'
+  | MutationKeySpecifier
+)[];
 export type MutationFieldPolicy = {
-	createConversation?: FieldPolicy<any> | FieldReadFunction<any>,
-	createUsername?: FieldPolicy<any> | FieldReadFunction<any>
+  createConversation?: FieldPolicy<any> | FieldReadFunction<any>;
+  createUsername?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MutationResponseKeySpecifier = ('code' | 'message' | 'success' | MutationResponseKeySpecifier)[];
+export type MutationResponseKeySpecifier = (
+  | 'code'
+  | 'message'
+  | 'success'
+  | MutationResponseKeySpecifier
+)[];
 export type MutationResponseFieldPolicy = {
-	code?: FieldPolicy<any> | FieldReadFunction<any>,
-	message?: FieldPolicy<any> | FieldReadFunction<any>,
-	success?: FieldPolicy<any> | FieldReadFunction<any>
+  code?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ParticipantKeySpecifier = ('hasUnseenLastestMessage' | 'participant' | ParticipantKeySpecifier)[];
+export type ParticipantKeySpecifier = (
+  | 'hasUnseenLastestMessage'
+  | 'participant'
+  | ParticipantKeySpecifier
+)[];
 export type ParticipantFieldPolicy = {
-	hasUnseenLastestMessage?: FieldPolicy<any> | FieldReadFunction<any>,
-	participant?: FieldPolicy<any> | FieldReadFunction<any>
+  hasUnseenLastestMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  participant?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type QueryKeySpecifier = ('getConversations' | 'searchUsers' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = (
+  | 'getConversations'
+  | 'searchUsers'
+  | QueryKeySpecifier
+)[];
 export type QueryFieldPolicy = {
-	getConversations?: FieldPolicy<any> | FieldReadFunction<any>,
-	searchUsers?: FieldPolicy<any> | FieldReadFunction<any>
+  getConversations?: FieldPolicy<any> | FieldReadFunction<any>;
+  searchUsers?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserKeySpecifier = ('email' | 'emailVerified' | 'id' | 'image' | 'name' | 'username' | UserKeySpecifier)[];
+export type SubscriptionKeySpecifier = (
+  | 'subcribeNewConversationCreated'
+  | SubscriptionKeySpecifier
+)[];
+export type SubscriptionFieldPolicy = {
+  subcribeNewConversationCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserKeySpecifier = (
+  | 'email'
+  | 'emailVerified'
+  | 'id'
+  | 'image'
+  | 'name'
+  | 'username'
+  | UserKeySpecifier
+)[];
 export type UserFieldPolicy = {
-	email?: FieldPolicy<any> | FieldReadFunction<any>,
-	emailVerified?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	image?: FieldPolicy<any> | FieldReadFunction<any>,
-	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	username?: FieldPolicy<any> | FieldReadFunction<any>
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  emailVerified?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  image?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  username?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserMutationResponseKeySpecifier = ('code' | 'message' | 'success' | 'user' | UserMutationResponseKeySpecifier)[];
+export type UserMutationResponseKeySpecifier = (
+  | 'code'
+  | 'message'
+  | 'success'
+  | 'user'
+  | UserMutationResponseKeySpecifier
+)[];
 export type UserMutationResponseFieldPolicy = {
-	code?: FieldPolicy<any> | FieldReadFunction<any>,
-	message?: FieldPolicy<any> | FieldReadFunction<any>,
-	success?: FieldPolicy<any> | FieldReadFunction<any>,
-	user?: FieldPolicy<any> | FieldReadFunction<any>
+  code?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
-	Conversation?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier),
-		fields?: ConversationFieldPolicy,
-	},
-	ConversationMutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ConversationMutationResponseKeySpecifier | (() => undefined | ConversationMutationResponseKeySpecifier),
-		fields?: ConversationMutationResponseFieldPolicy,
-	},
-	Message?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier),
-		fields?: MessageFieldPolicy,
-	},
-	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
-		fields?: MutationFieldPolicy,
-	},
-	MutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | MutationResponseKeySpecifier | (() => undefined | MutationResponseKeySpecifier),
-		fields?: MutationResponseFieldPolicy,
-	},
-	Participant?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ParticipantKeySpecifier | (() => undefined | ParticipantKeySpecifier),
-		fields?: ParticipantFieldPolicy,
-	},
-	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
-		fields?: QueryFieldPolicy,
-	},
-	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
-		fields?: UserFieldPolicy,
-	},
-	UserMutationResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | UserMutationResponseKeySpecifier | (() => undefined | UserMutationResponseKeySpecifier),
-		fields?: UserMutationResponseFieldPolicy,
-	}
+  Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationKeySpecifier
+      | (() => undefined | ConversationKeySpecifier);
+    fields?: ConversationFieldPolicy;
+  };
+  ConversationMutationResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationMutationResponseKeySpecifier
+      | (() => undefined | ConversationMutationResponseKeySpecifier);
+    fields?: ConversationMutationResponseFieldPolicy;
+  };
+  Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MessageKeySpecifier
+      | (() => undefined | MessageKeySpecifier);
+    fields?: MessageFieldPolicy;
+  };
+  Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MutationKeySpecifier
+      | (() => undefined | MutationKeySpecifier);
+    fields?: MutationFieldPolicy;
+  };
+  MutationResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MutationResponseKeySpecifier
+      | (() => undefined | MutationResponseKeySpecifier);
+    fields?: MutationResponseFieldPolicy;
+  };
+  Participant?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ParticipantKeySpecifier
+      | (() => undefined | ParticipantKeySpecifier);
+    fields?: ParticipantFieldPolicy;
+  };
+  Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | QueryKeySpecifier
+      | (() => undefined | QueryKeySpecifier);
+    fields?: QueryFieldPolicy;
+  };
+  Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SubscriptionKeySpecifier
+      | (() => undefined | SubscriptionKeySpecifier);
+    fields?: SubscriptionFieldPolicy;
+  };
+  User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);
+    fields?: UserFieldPolicy;
+  };
+  UserMutationResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserMutationResponseKeySpecifier
+      | (() => undefined | UserMutationResponseKeySpecifier);
+    fields?: UserMutationResponseFieldPolicy;
+  };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

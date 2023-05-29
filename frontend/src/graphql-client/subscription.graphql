@@ -1,0 +1,15 @@
+# Subscribe to new conversation created event
+subscription newConversationCreatedSub {
+  subcribeNewConversationCreated {
+    ...conversationFields
+    lastestMessage {
+      ...messageFields
+    }
+    participants {
+      hasUnseenLastestMessage
+      participant {
+        ...userFields
+      }
+    }
+  }
+}

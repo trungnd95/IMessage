@@ -25,7 +25,6 @@ const formatRelativeLocale = {
 export default function ConversationItem({
   conversation,
 }: ConversationItemProps) {
-  console.log(new Date(conversation.updatedAt));
   /// Libs
   const { data: session } = useSession();
 

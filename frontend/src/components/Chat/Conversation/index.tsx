@@ -1,4 +1,9 @@
-import { useGetConversationsQuery } from '@/graphql-client/generated/graphql';
+import {
+  GetConversationsQuery,
+  NewConversationCreatedSubDocument,
+  NewConversationCreatedSubSubscription,
+  useGetConversationsQuery,
+} from '@/graphql-client/generated/graphql';
 import {
   Box,
   Button,
@@ -9,7 +14,7 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import ConversationItem from './ConversationItem';
 import CreateModal from './CreateModal';
@@ -28,7 +33,40 @@ export default function Conversation({}: Props) {
     data,
     loading: queryConversationLoading,
     error: queryConversationError,
-  } = useGetConversationsQuery();
+    subscribeToMore,
+  } = useGetConversationsQuery({
+    fetchPolicy: 'cache-first',
+  });
+
+  /// Hoooks
+  const subscribeToUpdateListConversations = () => {
+    subscribeToMore({
+      document: NewConversationCreatedSubDocument,
+      updateQuery: (
+        prev: GetConversationsQuery,
+        {
+          subscriptionData: { data },
+        }: {
+          subscriptionData: { data: NewConversationCreatedSubSubscription };
+        },
+      ) => {
+        if (!data) return prev;
+        return {
+          ...prev,
+          getConversations: [
+            data.subcribeNewConversationCreated,
+            ...prev.getConversations,
+          ],
+        };
+      },
+    });
+  };
+  useEffect(() => {
+    console.log('Component render....!');
+    subscribeToUpdateListConversations();
+    subscribeToUpdateListConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /// Logic handling
   if (queryConversationError)
