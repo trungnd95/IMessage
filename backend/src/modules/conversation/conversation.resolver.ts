@@ -74,6 +74,7 @@ export class ConversationResolver {
    * @param conversation
    * @returns
    */
+  @UseMiddleware(CheckAuth)
   @Subscription(() => Conversation, {
     topics: CONVERSATION_CREATED,
     filter: ({ payload, context }: ResolverFilterData<Conversation, ArgsDictionary, Context>) => {

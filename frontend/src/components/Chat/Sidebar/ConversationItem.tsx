@@ -1,19 +1,14 @@
 import { Conversation, User } from '@/graphql-client/generated/graphql';
+import { parseChatGrName } from '@/lib/helper';
 import { Avatar, AvatarGroup, Box, HStack, Text } from '@chakra-ui/react';
 import { formatRelative } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 type ConversationItemProps = {
   conversation: Conversation;
 };
-
-function truncateConversationName(conversationNameStr: string): string {
-  const participantNameList = conversationNameStr.split(',');
-  return participantNameList.length > 2
-    ? participantNameList.slice(0, 2).join(',') + ',...'
-    : conversationNameStr;
-}
 
 const formatRelativeLocale = {
   lastWeek: 'eeee',
@@ -27,6 +22,7 @@ export default function ConversationItem({
 }: ConversationItemProps) {
   /// Libs
   const { data: session } = useSession();
+  const router = useRouter();
 
   /// Logic handling
   const listParticipants: User[] = conversation.participants.map(
@@ -35,15 +31,25 @@ export default function ConversationItem({
   const othersInConversation: User[] = listParticipants.filter(
     (participant) => participant.id !== session?.user.id,
   );
+  const hanldeChooseConversation = () => {
+    const url = { query: { conversationId: conversation.id } };
+    router.push(url, url, { shallow: true });
+  };
+
   return (
     <Box
-      m={2}
-      p={3}
-      //bg={'whiteAlpha.50'}
-      borderRadius={5}
-      _hover={{ bg: 'whiteAlpha.50', cursor: 'pointer' }}
+      px={3}
+      py={othersInConversation.length > 1 ? 5 : 3}
+      borderRadius={1}
+      _hover={{ cursor: 'pointer' }}
       borderBottom={'1px'}
       borderColor={'whiteAlpha.50'}
+      onClick={hanldeChooseConversation}
+      bg={
+        conversation.id === router.query.conversationId
+          ? 'whiteAlpha.200'
+          : 'none'
+      }
     >
       <HStack justify={'space-between'} spacing="5">
         <HStack spacing={2}>
@@ -63,15 +69,7 @@ export default function ConversationItem({
           )}
           {/* Group participants */}
           <Text as="h3" fontSize={'md'} fontWeight={700}>
-            {truncateConversationName(
-              othersInConversation.reduce(
-                (res, user, index) =>
-                  (res += `${user.username.trim()}${
-                    index === othersInConversation.length - 1 ? '' : ', '
-                  }`),
-                '',
-              ),
-            )}
+            {parseChatGrName(othersInConversation)}
           </Text>
         </HStack>
         <Text fontSize="sm">
