@@ -12,6 +12,7 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import merge from 'deepmerge';
 import { createClient } from 'graphql-ws';
 import isEqual from 'lodash/isEqual';
+import { getSession } from 'next-auth/react';
 import { useMemo } from 'react';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
@@ -37,6 +38,9 @@ const wsLink =
     ? new GraphQLWsLink(
         createClient({
           url: 'ws://localhost:4000/graphql/subscriptions',
+          connectionParams: async () => ({
+            session: await getSession(),
+          }),
         }),
       )
     : null;
