@@ -28,6 +28,6 @@ export class UserMutationResponse implements MutationResponse {
   success: boolean;
   message?: string | undefined;
 
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   user?: User;
 }

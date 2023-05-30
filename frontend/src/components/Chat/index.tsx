@@ -71,6 +71,7 @@ const Chat: React.FunctionComponent<IChatProps> = () => {
       duration: 3000,
       isClosable: true,
     });
+
   return (
     <>
       {queryConversationLoading ? (
@@ -88,7 +89,9 @@ const Chat: React.FunctionComponent<IChatProps> = () => {
             bg="whiteAlpha.100"
             py={6}
           >
-            <Sidebar conversations={data?.getConversations as Conversation[]} />
+            <Sidebar
+              conversations={(data?.getConversations as Conversation[]) || []}
+            />
           </Box>
           <Box
             w="100%"
@@ -97,7 +100,9 @@ const Chat: React.FunctionComponent<IChatProps> = () => {
               md: 'block',
             }}
           >
-            <Body conversations={data?.getConversations as Conversation[]} />
+            <Body
+              conversations={(data?.getConversations as Conversation[]) || []}
+            />
           </Box>
         </Flex>
       )}

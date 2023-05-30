@@ -31,8 +31,23 @@ type Message {
   updatedAt: DateTime!
 }
 
+input MessageInput {
+  body: String!
+  conversationId: ID!
+  id: ID!
+  senderId: ID!
+}
+
+type MessageMutationResponse implements MutationResponse {
+  code: Float!
+  message: String
+  messageData: Message
+  success: Boolean!
+}
+
 type Mutation {
   createConversation(participantIds: [String!]!): ConversationMutationResponse
+  createNewMessage(messageInput: MessageInput!): MessageMutationResponse!
   createUsername(username: String!): UserMutationResponse!
 }
 
@@ -49,6 +64,7 @@ type Participant {
 
 type Query {
   getConversations: [Conversation!]!
+  messages(id: ID!): [Message!]!
   searchUsers(searchUsername: String!): [User!]!
 }
 
@@ -69,5 +85,5 @@ type UserMutationResponse implements MutationResponse {
   code: Float!
   message: String
   success: Boolean!
-  user: User!
+  user: User
 }

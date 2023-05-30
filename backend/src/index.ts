@@ -13,6 +13,7 @@ import { buildSchema } from 'type-graphql';
 import { WebSocketServer } from 'ws';
 import { Context, Session, SubscriptionContext } from './lib/common-type';
 import { ConversationResolver } from './modules/conversation/conversation.resolver';
+import { MessageResolver } from './modules/message/message.resolver';
 import UserResolver from './modules/user/user.resolver';
 
 const main = async () => {
@@ -22,7 +23,7 @@ const main = async () => {
 
   /// Build schema
   const schema = await buildSchema({
-    resolvers: [UserResolver, ConversationResolver, UserResolver],
+    resolvers: [UserResolver, ConversationResolver, MessageResolver],
     emitSchemaFile: true,
     validate: false,
   });
