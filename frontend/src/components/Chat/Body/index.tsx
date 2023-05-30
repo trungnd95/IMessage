@@ -1,7 +1,10 @@
 import { Conversation, User } from '@/graphql-client/generated/graphql';
 import { Flex, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import FeedHeader from './FeedHeader';
+import FeedInput from './FeedInput';
+import FeedMessages from './FeedMessages';
 
 type FeedProps = {
   conversations: Conversation[];
@@ -10,20 +13,32 @@ type FeedProps = {
 export default function Body({ conversations }: FeedProps) {
   /// Get router params
   const router = useRouter();
-  const { conversationId } = router.query;
 
   /// Logic handling
   const conversation = conversations.find(
-    (conversation) => conversation.id === conversationId,
+    (conversation) => conversation.id === router.query.conversationId,
   );
+
   const listParticipants: User[] = conversation?.participants.map(
     (item) => item.participant,
   ) as User[];
+
+  /// Hooks
+  useEffect(() => {
+    if (!conversation && router.query.conversationId) {
+      router.replace('', undefined, { shallow: true });
+    }
+  }, [conversation, router]);
+
   return (
     <>
-      {conversationId ? (
+      {router.query.conversationId && conversation ? (
         <VStack align={'stretch'} h="full">
-          <FeedHeader participants={listParticipants} />
+          <VStack flexGrow={1} align={'stretch'}>
+            <FeedHeader participants={listParticipants} />
+            <FeedMessages />
+          </VStack>
+          <FeedInput />
         </VStack>
       ) : (
         <Flex h="full" align={'center'} justify={'center'}>
