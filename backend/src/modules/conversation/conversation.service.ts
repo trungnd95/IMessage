@@ -38,7 +38,7 @@ export async function createConversation(
  * Get all conversations for current user
  */
 export async function getConversations(currentUser: User): Promise<Array<Conversation>> {
-  return prisma.conversation.findMany({
+  return await prisma.conversation.findMany({
     where: {
       participants: {
         some: {

@@ -20,3 +20,17 @@ query GetConversations {
     }
   }
 }
+
+# Get all messages in conversation
+query GetMessages($conversationId: ID!) {
+  messages(conversationId: $conversationId) {
+    id
+    body
+    conversationId
+    sender {
+      ...userFields
+    }
+    createdAt
+    updatedAt
+  }
+}

@@ -9,6 +9,7 @@ fragment userFields on User {
 fragment messageFields on Message {
   id
   body
+  conversationId
   createdAt
   updatedAt
   sender {

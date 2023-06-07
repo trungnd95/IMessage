@@ -11,6 +11,9 @@ export class Message {
   sender: User;
 
   @Field()
+  conversationId: string;
+
+  @Field()
   body: string;
 
   @Field()
@@ -44,3 +47,11 @@ export class MessageMutationResponse implements MutationResponse {
   @Field(() => Message, { nullable: true })
   messageData?: Message;
 }
+
+@InputType()
+export class NewMessageCreatedEventArg {
+  @Field()
+  conversationId: string;
+}
+/// Define message subscription events
+export const MESSAGE_CREATED = 'MESSAGE_CREATED';

@@ -36,9 +36,9 @@ export default function Body({ conversations }: FeedProps) {
         <VStack align={'stretch'} h="full">
           <VStack flexGrow={1} align={'stretch'}>
             <FeedHeader participants={listParticipants} />
-            <FeedMessages />
+            <FeedMessages conversationId={conversation.id} />
           </VStack>
-          <FeedInput />
+          <FeedInput conversationId={conversation.id} />
         </VStack>
       ) : (
         <Flex h="full" align={'center'} justify={'center'}>

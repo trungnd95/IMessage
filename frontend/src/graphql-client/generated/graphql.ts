@@ -37,6 +37,7 @@ export type ConversationMutationResponse = MutationResponse & {
 export type Message = {
   __typename?: 'Message';
   body: Scalars['String'];
+  conversationId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   sender: User;
@@ -101,7 +102,7 @@ export type Query = {
 
 
 export type QueryMessagesArgs = {
-  id: Scalars['ID'];
+  conversationId: Scalars['ID'];
 };
 
 
@@ -112,6 +113,12 @@ export type QuerySearchUsersArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   subcribeNewConversationCreated: Conversation;
+  subcribeNewMessageSent: Message;
+};
+
+
+export type SubscriptionSubcribeNewMessageSentArgs = {
+  conversationId: Scalars['String'];
 };
 
 export type User = {
@@ -134,7 +141,7 @@ export type UserMutationResponse = MutationResponse & {
 
 export type UserFieldsFragment = { __typename?: 'User', id: string, name: string, email: string, username: string, image: string };
 
-export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } };
+export type MessageFieldsFragment = { __typename?: 'Message', id: string, body: string, conversationId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } };
 
 export type ConversationFieldsFragment = { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any };
 
@@ -157,7 +164,7 @@ export type CreateMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateMessageMutation = { __typename?: 'Mutation', createNewMessage: { __typename?: 'MessageMutationResponse', code: number, success: boolean, messageData?: { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null } };
+export type CreateMessageMutation = { __typename?: 'Mutation', createNewMessage: { __typename?: 'MessageMutationResponse', code: number, success: boolean, messageData?: { __typename?: 'Message', id: string, body: string, conversationId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null } };
 
 export type SearchUsersQueryVariables = Exact<{
   searchUsername: Scalars['String'];
@@ -169,12 +176,26 @@ export type SearchUsersQuery = { __typename?: 'Query', searchUsers: Array<{ __ty
 export type GetConversationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetConversationsQuery = { __typename?: 'Query', getConversations: Array<{ __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> }> };
+export type GetConversationsQuery = { __typename?: 'Query', getConversations: Array<{ __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, conversationId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> }> };
+
+export type GetMessagesQueryVariables = Exact<{
+  conversationId: Scalars['ID'];
+}>;
+
+
+export type GetMessagesQuery = { __typename?: 'Query', messages: Array<{ __typename?: 'Message', id: string, body: string, conversationId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> };
 
 export type NewConversationCreatedSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NewConversationCreatedSubSubscription = { __typename?: 'Subscription', subcribeNewConversationCreated: { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> } };
+export type NewConversationCreatedSubSubscription = { __typename?: 'Subscription', subcribeNewConversationCreated: { __typename?: 'Conversation', id: string, createdAt: any, updatedAt: any, lastestMessage?: { __typename?: 'Message', id: string, body: string, conversationId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } } | null, participants: Array<{ __typename?: 'Participant', hasUnseenLastestMessage: boolean, participant: { __typename?: 'User', id: string, name: string, email: string, username: string, image: string } }> } };
+
+export type NewMessageCreatedSubscriptionVariables = Exact<{
+  conversationId: Scalars['String'];
+}>;
+
+
+export type NewMessageCreatedSubscription = { __typename?: 'Subscription', subcribeNewMessageSent: { __typename?: 'Message', body: string, conversationId: string, createdAt: any, id: string, updatedAt: any, sender: { __typename?: 'User', username: string, name: string, image: string, id: string, emailVerified?: any | null, email: string } } };
 
 export const UserFieldsFragmentDoc = gql`
     fragment userFields on User {
@@ -189,6 +210,7 @@ export const MessageFieldsFragmentDoc = gql`
     fragment messageFields on Message {
   id
   body
+  conversationId
   createdAt
   updatedAt
   sender {
@@ -393,6 +415,48 @@ export function useGetConversationsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetConversationsQueryHookResult = ReturnType<typeof useGetConversationsQuery>;
 export type GetConversationsLazyQueryHookResult = ReturnType<typeof useGetConversationsLazyQuery>;
 export type GetConversationsQueryResult = Apollo.QueryResult<GetConversationsQuery, GetConversationsQueryVariables>;
+export const GetMessagesDocument = gql`
+    query GetMessages($conversationId: ID!) {
+  messages(conversationId: $conversationId) {
+    id
+    body
+    conversationId
+    sender {
+      ...userFields
+    }
+    createdAt
+    updatedAt
+  }
+}
+    ${UserFieldsFragmentDoc}`;
+
+/**
+ * __useGetMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useGetMessagesQuery(baseOptions: Apollo.QueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMessagesQuery, GetMessagesQueryVariables>(GetMessagesDocument, options);
+      }
+export function useGetMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMessagesQuery, GetMessagesQueryVariables>(GetMessagesDocument, options);
+        }
+export type GetMessagesQueryHookResult = ReturnType<typeof useGetMessagesQuery>;
+export type GetMessagesLazyQueryHookResult = ReturnType<typeof useGetMessagesLazyQuery>;
+export type GetMessagesQueryResult = Apollo.QueryResult<GetMessagesQuery, GetMessagesQueryVariables>;
 export const NewConversationCreatedSubDocument = gql`
     subscription newConversationCreatedSub {
   subcribeNewConversationCreated {
@@ -433,6 +497,48 @@ export function useNewConversationCreatedSubSubscription(baseOptions?: Apollo.Su
       }
 export type NewConversationCreatedSubSubscriptionHookResult = ReturnType<typeof useNewConversationCreatedSubSubscription>;
 export type NewConversationCreatedSubSubscriptionResult = Apollo.SubscriptionResult<NewConversationCreatedSubSubscription>;
+export const NewMessageCreatedDocument = gql`
+    subscription newMessageCreated($conversationId: String!) {
+  subcribeNewMessageSent(conversationId: $conversationId) {
+    body
+    conversationId
+    createdAt
+    id
+    updatedAt
+    sender {
+      username
+      name
+      image
+      id
+      emailVerified
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useNewMessageCreatedSubscription__
+ *
+ * To run a query within a React component, call `useNewMessageCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewMessageCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewMessageCreatedSubscription({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useNewMessageCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<NewMessageCreatedSubscription, NewMessageCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<NewMessageCreatedSubscription, NewMessageCreatedSubscriptionVariables>(NewMessageCreatedDocument, options);
+      }
+export type NewMessageCreatedSubscriptionHookResult = ReturnType<typeof useNewMessageCreatedSubscription>;
+export type NewMessageCreatedSubscriptionResult = Apollo.SubscriptionResult<NewMessageCreatedSubscription>;
 export type ConversationKeySpecifier = ('createdAt' | 'id' | 'lastestMessage' | 'participants' | 'updatedAt' | ConversationKeySpecifier)[];
 export type ConversationFieldPolicy = {
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -448,9 +554,10 @@ export type ConversationMutationResponseFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>,
 	success?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MessageKeySpecifier = ('body' | 'createdAt' | 'id' | 'sender' | 'updatedAt' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = ('body' | 'conversationId' | 'createdAt' | 'id' | 'sender' | 'updatedAt' | MessageKeySpecifier)[];
 export type MessageFieldPolicy = {
 	body?: FieldPolicy<any> | FieldReadFunction<any>,
+	conversationId?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	sender?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -486,9 +593,10 @@ export type QueryFieldPolicy = {
 	messages?: FieldPolicy<any> | FieldReadFunction<any>,
 	searchUsers?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SubscriptionKeySpecifier = ('subcribeNewConversationCreated' | SubscriptionKeySpecifier)[];
+export type SubscriptionKeySpecifier = ('subcribeNewConversationCreated' | 'subcribeNewMessageSent' | SubscriptionKeySpecifier)[];
 export type SubscriptionFieldPolicy = {
-	subcribeNewConversationCreated?: FieldPolicy<any> | FieldReadFunction<any>
+	subcribeNewConversationCreated?: FieldPolicy<any> | FieldReadFunction<any>,
+	subcribeNewMessageSent?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserKeySpecifier = ('email' | 'emailVerified' | 'id' | 'image' | 'name' | 'username' | UserKeySpecifier)[];
 export type UserFieldPolicy = {

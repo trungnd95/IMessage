@@ -24,7 +24,7 @@ export async function createMessage(messageInput: MessageInput): Promise<Message
  * @param conversationId
  */
 export async function getMessages(conversationId: string, requestUser: User): Promise<Message[]> {
-  return await prisma.message.findMany({
+  return prisma.message.findMany({
     where: {
       conversation: {
         AND: {

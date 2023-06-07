@@ -24,6 +24,11 @@ export default function FeedInput({ conversationId }: FeedInputProps) {
           body: inputMessage,
         },
       },
+      // update: (cache) => {
+      //   cache.modify({
+
+      //   })
+      // },
     });
     console.log(data);
   };

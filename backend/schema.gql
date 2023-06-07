@@ -25,6 +25,7 @@ scalar DateTime
 
 type Message {
   body: String!
+  conversationId: String!
   createdAt: DateTime!
   id: String!
   sender: User!
@@ -64,12 +65,13 @@ type Participant {
 
 type Query {
   getConversations: [Conversation!]!
-  messages(id: ID!): [Message!]!
+  messages(conversationId: ID!): [Message!]!
   searchUsers(searchUsername: String!): [User!]!
 }
 
 type Subscription {
   subcribeNewConversationCreated: Conversation!
+  subcribeNewMessageSent(conversationId: String!): Message!
 }
 
 type User {

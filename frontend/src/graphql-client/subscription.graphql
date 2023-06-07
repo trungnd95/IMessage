@@ -13,3 +13,13 @@ subscription newConversationCreatedSub {
     }
   }
 }
+
+# Subscribe to new conversation created event
+subscription newMessageCreated($conversationId: String!) {
+  subcribeNewMessageSent(conversationId: $conversationId) {
+    ...messageFields
+    sender {
+      ...userFields
+    }
+  }
+}
