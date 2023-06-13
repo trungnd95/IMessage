@@ -33,8 +33,8 @@ export default function Body({ conversations }: FeedProps) {
   return (
     <>
       {router.query.conversationId && conversation ? (
-        <VStack align={'stretch'} h="full">
-          <VStack flexGrow={1} align={'stretch'}>
+        <VStack align={'stretch'} h="full" maxH={'100vh'}>
+          <VStack align={'stretch'} overflow={'hidden'}>
             <FeedHeader participants={listParticipants} />
             <FeedMessages conversationId={conversation.id} />
           </VStack>

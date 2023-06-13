@@ -15,7 +15,7 @@ export default function FeedHeader({ participants }: FeedHeaderProps) {
 
   return (
     <HStack
-      h="10%"
+      h="100px"
       alignItems={'center'}
       bg={'blackAlpha.200'}
       px={5}
